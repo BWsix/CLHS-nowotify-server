@@ -1,6 +1,6 @@
 from news_api import get_news
-from notify import notify_discord, notify_line
-from database import db_get_data, db_get_new_news
+from database import db_get_all_nowotify, db_get_new_news
+from notify import notify_users
 
 import logging
 logging.basicConfig(
@@ -24,10 +24,9 @@ def checker() -> None:
   new_news = db_get_new_news(fetched_news)
 
   if not new_news: return 
-
-  webhook_urls = db_get_data("discord")
-  lotify_tokens = db_get_data("line")
+  
+  all_nowotify = db_get_all_nowotify()
 
   for news in new_news:
-    notify_discord(news, webhook_urls)
-    notify_line(news, lotify_tokens)
+    notify_users(news, all_nowotify)
+
