@@ -20,7 +20,7 @@ def notify_discord(news: News, webhooks: list[str]) -> None:
         "color": 14177041 if news.is_pinned else 0,
         "author": {
           "name": "CLHS nowotify",
-          "url": "https://github.com/BWsix", # TODO change this url to github page after deploy
+          "url": "https://bwsix.github.io/CLHS-nowotify",
         },
       }],
     }
