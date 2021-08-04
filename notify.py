@@ -41,8 +41,9 @@ def notify_discord_user(webhook_url: str, content: str) -> None:
   
   try:
     requests.post(webhook_url, json=content)
+    logging.info(f"[notify] a discord channel gets notified")
   except:
-    logging.warn(f"[notify_discord] failed to send message to {webhook_url}")
+    logging.warn(f"[notify] failed to send message to discord channel, webhook url: {webhook_url}")
     pass
     # please help me out if you have any idea how to properly handle any potentail errors, thanks!
 
@@ -52,8 +53,9 @@ def notify_line_user(token: str, content: str) -> None:
   
   try:
     LineNotify(token).send(content)
+    logging.info(f"[notify] a line group gets notified")
   except:
-    logging.warn(f"[notify_line] failed to send message to {token}")
+    logging.warn(f"[notify] failed to send message to line group, lotify token: {token}")
     pass
     # please help me out if you have any idea how to properly handle any potentail errors, thanks!
 
@@ -64,6 +66,7 @@ def notify_users(news: News, all_nowotify: list[Nowotify]) -> None:
 
   content_discord, content_line = create_notify_contents(news)
 
+  logging.info(f"[notify]started notifying all users.(news id {news.id})")
   for nowotify in all_nowotify:
     if nowotify.only_pinned and not news.is_pinned:
       continue
