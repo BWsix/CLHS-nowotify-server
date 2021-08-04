@@ -2,7 +2,7 @@ import logging
 import requests
 from line_notify import LineNotify
 from news_api import News
-from database import Nowotify
+from database import Nowotify, db_get_all_nowotify
 
 NEWS_LINK = "https://www.clhs.tyc.edu.tw/ischool/public/news_view/show.php?nid={0}"
 
@@ -68,6 +68,32 @@ def notify_users(news: News, all_nowotify: list[Nowotify]) -> None:
     if nowotify.only_pinned and not news.is_pinned:
       continue
 
+    if nowotify.type == "discord":
+      notify_discord_user(nowotify.data, content_discord)
+    if nowotify.type == "line":
+      notify_line_user(nowotify.data, content_line)
+
+
+def send_system_message(title: str, message: str) -> None:
+  """sends message to all users."""
+
+  content_line = f"[系統公告] {title}\n{message}"
+  content_discord = {
+    "embeds": [{
+      "title": f"[系統公告] {title}",
+      "description": message,
+      "url": "https://bwsix.github.io/CLHS-nowotify",
+      "color": 14177041,
+      "author": {
+        "name": "CLHS nowotify",
+        "url": "",
+      },
+    }],
+  }
+
+  nowotifys = db_get_all_nowotify()
+
+  for nowotify in nowotifys:
     if nowotify.type == "discord":
       notify_discord_user(nowotify.data, content_discord)
     if nowotify.type == "line":
