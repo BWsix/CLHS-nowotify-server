@@ -1,6 +1,10 @@
-from news_api import get_news
-from database import db_get_all_nowotify, db_get_new_news
+from database import db_get_all_nowotify
+import logging
+from news_api import get_new_news
 from notify import notify_users
+
+# from dotenv import load_dotenv
+# load_dotenv()
 
 import logging
 logging.basicConfig(
@@ -19,14 +23,15 @@ def checker() -> None:
     1. update datebase
     2. send notifications to users
   """
-
-  fetched_news = get_news()
-  new_news = db_get_new_news(fetched_news)
-
-  if not new_news: return 
   
+  new_news = get_new_news()
+  if not new_news:
+    logging.info("(no new news)")
+    return 
+
   all_nowotify = db_get_all_nowotify()
 
   for news in new_news:
+    logging.info(f"[NEW NEWS]date:{news.date},id:{news.id},content:{news.content}")
     notify_users(news, all_nowotify)
 

@@ -1,10 +1,10 @@
+import logging
+from database import db, db_get_ids_on_latest_date, db_update_news_ids
 import os
 import json
 import requests
 from dataclasses import dataclass
 
-# from dotenv import load_dotenv
-# load_dotenv()
 
 API_ENTRY = "https://www.clhs.tyc.edu.tw/ischool/widget/site_news/news_query_json.php"
 API_HEADER = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'}
@@ -43,4 +43,35 @@ def get_news(data_count: int = 40) -> list[News]:
     ))
 
   return news_list
+
+
+def get_news_on_latest_date() -> tuple[str, list[News]]:
+  """returns a tuple[`latest date`,`list[news on that day]`]"""
+
+  news_list = get_news()
+  news_list.sort(reverse=True, key=lambda news: news.date)
+
+  latest_date = news_list[0].date
+  return latest_date, [news for news in news_list if news.date == latest_date]
+
+
+def get_new_news() -> list[News]:
+  """returns a list of new news on the latest date."""
+
+  latest_date, news_on_latest_date = get_news_on_latest_date()
+  doc_ref = db.collection(u"stats").document(u"news")
+
+  news_ids_on_latest_date = db_get_ids_on_latest_date(latest_date, doc_ref)
+
+  new_news = []
+  for news in news_on_latest_date:
+    if news.id in news_ids_on_latest_date:
+      continue
+
+    new_news.append(news)
+
+  if new_news:
+    db_update_news_ids([news.id for news in new_news], doc_ref)
+  
+  return new_news
 

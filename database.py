@@ -4,11 +4,8 @@ from dataclasses import dataclass
 import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud.firestore import Client, DocumentSnapshot
-from news_api import News
+from google.cloud.firestore_v1.document import DocumentReference
 
-
-# from dotenv import load_dotenv
-# load_dotenv()
 
 credential = {
   "type": os.environ['type'],
@@ -35,51 +32,37 @@ class Nowotify:
   only_pinned: bool
 
 
-def db_get_last_id() -> int:
-  """returns the latest news id in the database."""
-
-  doc: DocumentSnapshot = db.collection(u"stats").document("news").get()
-
-  return doc.get("last_id")
-
-
-def db_update_last_id(id: int) -> None:
-  """updates database with the given news id."""
-
-  db.collection(u"stats").document("news").update({
-    "last_id": id
-  })
-
-
-def db_get_new_news(news_list: list[News]) -> list[News]:
-  """retruns a list of new `news`."""
-
-  last_id = db_get_last_id()
-  new_last_id = 0
-  new_news: list[News] = []
-
-  for news in news_list:
-    if news.id <= last_id:
-      continue
-
-    logging.info(f"[db_get_new_news]:{news}")
-    
-    new_news.append(news)
-    new_last_id = max(new_last_id, news.id)
-
-  if new_last_id == 0:
-    return []
-
-  db_update_last_id(new_last_id)
-  return new_news[::-1] # old -> new
-
-
 def db_get_all_nowotify() -> list[Nowotify]:
   """returns `list[Nowotify]`"""
 
   docs : list[DocumentSnapshot] = db.collection(u"links").get()
+  logging.info(f"[DB]fetched all nowotifys from the database.({len(docs)} in total)")
 
   return [
     Nowotify(doc.get("type"), doc.get("data"), doc.get("only_pinned")) 
   for doc in docs]
+
+
+def db_get_ids_on_latest_date(latest_date: str, doc_ref: DocumentReference) -> list[str]:
+  """returns a list of ids on the latest date."""
+
+  doc = doc_ref.get()
+
+  if doc.get("date") != latest_date:
+    doc_ref.set({
+      "date": latest_date,
+      "news_ids": []
+    })
+    doc = doc_ref.get()
+
+  return doc.get("news_ids")
+
+
+def db_update_news_ids(ids: list[str], doc_ref: DocumentReference) -> None:
+  """updates the database with the new ids."""
+
+  doc_ref.update({
+    "news_ids": firestore.firestore.ArrayUnion(ids)
+  })
+  logging.info(f"[DB]updated new news ids.({','.join(map(str, ids))})")
 
