@@ -3,7 +3,7 @@ from database import db, db_get_ids_on_latest_date, db_update_news_ids
 import os
 import json
 import requests
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 API_ENTRY = "https://www.clhs.tyc.edu.tw/ischool/widget/site_news/news_query_json.php"
@@ -11,14 +11,16 @@ API_HEADER = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
 API_BODY = "field=time&order=DESC&pageNum=0&maxRows={0}&keyword=&uid="+os.environ["uid"]+"&tf=1&auth_type=user&use_cache=1"
 
 
-@dataclass
+@dataclass(frozen=True, eq=True, order=True)
 class News:
-  id: int         # 27495
-  content: str    # 本校110學年第2次代理教師甄選簡章公告
-  office: str     # 人事室
-  news_type: str  # 公告
-  date: str       # 2021/07/28
-  is_pinned: bool # 0 or 1 
+  """News. will be compared based on only publish/update date"""
+  
+  id: int         = field(compare=False)
+  content: str    = field(compare=False)
+  office: str     = field(compare=False)
+  news_type: str  = field(compare=False)
+  date: str       
+  is_pinned: bool = field(compare=False)
 
   def __str__(self):
     return f"({self.date}){self.id} :{'pinned' if self.is_pinned else ''} {self.content}"
@@ -49,9 +51,8 @@ def get_news_on_latest_date() -> tuple[str, list[News]]:
   """returns a tuple[`latest date`,`list[news on that day]`]"""
 
   news_list = get_news()
-  news_list.sort(reverse=True, key=lambda news: news.date)
+  latest_date = max(news_list).date
 
-  latest_date = news_list[0].date
   return latest_date, [news for news in news_list if news.date == latest_date]
 
 
