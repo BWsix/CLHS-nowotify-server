@@ -4,12 +4,21 @@ import os
 import json
 import requests
 from dataclasses import dataclass, field
-from keywords import KEYWORD_TABLE
 
 
 API_ENTRY = "https://www.clhs.tyc.edu.tw/ischool/widget/site_news/news_query_json.php"
 API_HEADER = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 API_BODY = "field=time&order=DESC&pageNum=0&maxRows={0}&keyword=&uid="+os.environ["uid"]+"&tf=1&auth_type=user&use_cache=1"
+
+with open("keywords.json", "r", encoding="utf-8") as f:
+  keyword_list = json.load(f)
+  tmp_keyword_table: dict[int, list[str]] = {}
+
+  for idx, keys in enumerate(keyword_list):
+    tmp_keyword_table[idx] = keys[1:]
+
+  KEYWORD_TABLE = tmp_keyword_table
+
 
 @dataclass(frozen=True, eq=True, order=True)
 class News:
