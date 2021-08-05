@@ -6,6 +6,8 @@ from firebase_admin import credentials, firestore
 from google.cloud.firestore import Client, DocumentSnapshot
 from google.cloud.firestore_v1.document import DocumentReference
 
+# import dotenv
+# dotenv.load_dotenv()
 
 credential = {
   "type": os.environ['type'],
@@ -30,6 +32,7 @@ class Nowotify:
   type: str
   data: str
   only_pinned: bool
+  blocked_keyword_ids: list[int]
 
 
 def db_get_all_nowotify() -> list[Nowotify]:
@@ -39,7 +42,12 @@ def db_get_all_nowotify() -> list[Nowotify]:
   logging.info(f"[DB]fetched all nowotifys from the database.({len(docs)} in total)")
 
   return [
-    Nowotify(doc.get("type"), doc.get("data"), doc.get("only_pinned")) 
+    Nowotify(
+      doc.get("type"),
+      doc.get("data"),
+      doc.get("only_pinned"),
+      doc.get("blocked_keyword_ids"),
+    )
   for doc in docs]
 
 

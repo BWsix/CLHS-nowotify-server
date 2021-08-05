@@ -4,12 +4,12 @@ import os
 import json
 import requests
 from dataclasses import dataclass, field
+from keywords import KEYWORD_TABLE
 
 
 API_ENTRY = "https://www.clhs.tyc.edu.tw/ischool/widget/site_news/news_query_json.php"
 API_HEADER = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 API_BODY = "field=time&order=DESC&pageNum=0&maxRows={0}&keyword=&uid="+os.environ["uid"]+"&tf=1&auth_type=user&use_cache=1"
-
 
 @dataclass(frozen=True, eq=True, order=True)
 class News:
@@ -21,6 +21,7 @@ class News:
   news_type: str  = field(compare=False)
   date: str       
   is_pinned: bool = field(compare=False)
+  keyword_ids: list[int] = field(compare=False, default_factory=list)
 
   def __str__(self):
     return f"({self.date}){self.id} :{'pinned' if self.is_pinned else ''} {self.content}"
@@ -35,14 +36,26 @@ def get_news(data_count: int = 40) -> list[News]:
   news_list: list[News] = []
 
   for elem in data:
-    news_list.append(News(
+    content = elem.get("title")
+    matched_keywords = []
+    
+    for idx, keyword_list in KEYWORD_TABLE.items():
+      for keyword in keyword_list:
+        if content.find(keyword) != -1:
+          matched_keywords.append(idx)
+          break
+
+    news = News(
       int(elem["newsId"]),
-      elem["title"],
+      content,
       elem["name"],
       elem["attr_name"],
       elem["time"],
       elem["top"],
-    ))
+      matched_keywords,
+    )
+
+    news_list.append(news)
 
   return news_list
 

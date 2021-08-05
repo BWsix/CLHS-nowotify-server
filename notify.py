@@ -70,6 +70,9 @@ def notify_users(news: News, all_nowotify: list[Nowotify]) -> None:
   for nowotify in all_nowotify:
     if nowotify.only_pinned and not news.is_pinned:
       continue
+      
+    if any(map(lambda id: id in nowotify.blocked_keyword_ids, news.keyword_ids)):
+      continue
 
     if nowotify.type == "discord":
       notify_discord_user(nowotify.data, content_discord)
