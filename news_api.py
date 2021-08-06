@@ -10,11 +10,12 @@ API_ENTRY = "https://www.clhs.tyc.edu.tw/ischool/widget/site_news/news_query_jso
 API_HEADER = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 API_BODY = "field=time&order=DESC&pageNum=0&maxRows={1}&keyword=&uid={0}&tf=1&auth_type=user&use_cache=1"
 
-with open("groups.json", "r", encoding="utf-8") as f:
+with open("./data/groups.json", "r", encoding="utf-8") as f:
   tmp_groups = json.load(f)
-  UID_TABLE = tmp_groups
 
-with open("keywords.json", "r", encoding="utf-8") as f:
+  UID_TABLE = {id:detail["data"] for id, detail in tmp_groups.items()}  
+
+with open("./data/keywords.json", "r", encoding="utf-8") as f:
   keyword_list = json.load(f)
   tmp_keyword_table: dict[int, list[str]] = {}
 
