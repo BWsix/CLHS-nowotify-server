@@ -68,6 +68,9 @@ def notify_users(news: News, all_nowotify: list[Nowotify]) -> None:
 
   logging.info(f"[notify]started notifying all users.(news id {news.id})")
   for nowotify in all_nowotify:
+    if not news.group in nowotify.groups:
+      continue
+    
     if nowotify.only_pinned and not news.is_pinned:
       continue
       

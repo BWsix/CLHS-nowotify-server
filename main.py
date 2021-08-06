@@ -1,6 +1,6 @@
 from database import db_get_all_nowotify
 import logging
-from news_api import get_new_news
+from news_api import News, UID_TABLE, get_new_news
 from notify import notify_users
 
 # from dotenv import load_dotenv
@@ -14,6 +14,7 @@ logging.basicConfig(
   level=logging.INFO
 )
 
+GROUPS = UID_TABLE.keys()
 
 def checker() -> None:
   """
@@ -24,14 +25,17 @@ def checker() -> None:
     2. send notifications to users
   """
   
-  new_news = get_new_news()
+  new_news: list[News] = []
+  for group in GROUPS:
+    new_news += get_new_news(group)
+
   if not new_news:
     logging.info("(no new news)")
     return 
-
+  
   all_nowotify = db_get_all_nowotify()
 
   for news in new_news:
-    logging.info(f"[NEW NEWS]date:{news.date},id:{news.id},content:{news.content}")
+    logging.info(f"[NEW NEWS]\ndate:{news.date},id:{news.id},group:{news.group}\ncontent:{news.content}")
     notify_users(news, all_nowotify)
 

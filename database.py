@@ -33,6 +33,7 @@ class Nowotify:
   data: str
   only_pinned: bool
   blocked_keyword_ids: list[int]
+  groups: list[str]
 
 
 def db_get_all_nowotify() -> list[Nowotify]:
@@ -43,10 +44,11 @@ def db_get_all_nowotify() -> list[Nowotify]:
 
   return [
     Nowotify(
-      doc.get("type"),
-      doc.get("data"),
-      doc.get("only_pinned"),
-      doc.get("blocked_keyword_ids"),
+      type        = doc.get("type"),
+      data        = doc.get("data"),
+      groups      = doc.get("group"),
+      only_pinned = doc.get("only_pinned"),
+      blocked_keyword_ids = doc.get("blocked_keyword_ids"),
     )
   for doc in docs]
 
