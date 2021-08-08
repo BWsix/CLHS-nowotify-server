@@ -6,8 +6,8 @@ from firebase_admin import credentials, firestore
 from google.cloud.firestore import Client, DocumentSnapshot
 from google.cloud.firestore_v1.document import DocumentReference
 
-# import dotenv
-# dotenv.load_dotenv()
+import dotenv
+dotenv.load_dotenv()
 
 credential = {
   "type": os.environ['type'],

@@ -1,8 +1,9 @@
 import logging
 import requests
 from line_notify import LineNotify
-from news_api import News
-from database import Nowotify, db_get_all_nowotify
+
+from .news_api import News
+from .database import Nowotify, db_get_all_nowotify
 
 NEWS_LINK = "https://www.clhs.tyc.edu.tw/ischool/public/news_view/show.php?nid={0}"
 

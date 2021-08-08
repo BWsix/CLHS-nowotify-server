@@ -1,28 +1,16 @@
 import logging
-from database import db, db_get_ids_on_latest_date, db_update_news_ids
 import os
 import json
 import requests
 from dataclasses import dataclass, field
 
+from .database import db, db_get_ids_on_latest_date, db_update_news_ids
+from data import UID_TABLE, KEYWORD_TABLE
+
 
 API_ENTRY = "https://www.clhs.tyc.edu.tw/ischool/widget/site_news/news_query_json.php"
 API_HEADER = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 API_BODY = "field=time&order=DESC&pageNum=0&maxRows={1}&keyword=&uid={0}&tf=1&auth_type=user&use_cache=1"
-
-with open("./data/groups.json", "r", encoding="utf-8") as f:
-  tmp_groups = json.load(f)
-
-  UID_TABLE = {id:detail["data"] for id, detail in tmp_groups.items()}  
-
-with open("./data/keywords.json", "r", encoding="utf-8") as f:
-  keyword_list = json.load(f)
-  tmp_keyword_table: dict[int, list[str]] = {}
-
-  for idx, keys in enumerate(keyword_list):
-    tmp_keyword_table[idx] = keys[1:]
-
-  KEYWORD_TABLE = tmp_keyword_table
 
 
 @dataclass(frozen=True, eq=True, order=True)

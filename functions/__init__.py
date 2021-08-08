@@ -1,10 +1,9 @@
-from database import db_get_all_nowotify
 import logging
-from news_api import News, UID_TABLE, get_new_news
-from notify import notify_users
 
-# from dotenv import load_dotenv
-# load_dotenv()
+from .database import db_get_all_nowotify
+from .news_api import News, UID_TABLE, get_new_news
+from .notify import notify_users
+
 
 import logging
 logging.basicConfig(
