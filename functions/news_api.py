@@ -13,18 +13,18 @@ API_HEADER = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
 API_BODY = "field=time&order=DESC&pageNum=0&maxRows={1}&keyword=&uid={0}&tf=1&auth_type=user&use_cache=1"
 
 
-@dataclass(frozen=True, eq=True, order=True)
+@dataclass(frozen=True)
 class News:
   """News. will be compared based on only publish/update date"""
   
   date: str       
-  id: int         = field(compare=False)
-  content: str    = field(compare=False)
-  office: str     = field(compare=False)
-  news_type: str  = field(compare=False)
-  is_pinned: bool = field(compare=False)
-  group: str      = field(compare=False)
-  keyword_ids: list[int] = field(compare=False)
+  id: int
+  content: str
+  office: str
+  news_type: str
+  is_pinned: bool
+  group: str
+  keyword_ids: list[int]
 
   def __str__(self):
     return f"date:{self.date},id:{self.id},group:{self.group}{'(pinned)' if self.is_pinned else ''}\ncontent:{self.content}"
@@ -86,9 +86,9 @@ def get_news_on_latest_date(group: str) -> tuple[str, list[News]]:
   """
 
   news_list = get_news(group)
-  latest_date = max(news_list).date
-
-  return latest_date, [news for news in news_list if news.date == latest_date]
+  latest_date = max(news_list, key=lambda n: n.date)
+  
+  return latest_date, (news for news in news_list if news.date == latest_date)
 
 
 def get_new_news(group: str) -> list[News]:
