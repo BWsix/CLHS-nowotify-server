@@ -6,18 +6,19 @@ from firebase_admin import credentials, firestore
 from google.cloud.firestore import Client, DocumentSnapshot
 from google.cloud.firestore_v1.document import DocumentReference
 
-import dotenv
-dotenv.load_dotenv()
+# import dotenv
+# dotenv.load_dotenv()
 
 credential = {
-  "type": os.environ['type'],
-  "project_id": os.environ["project_id"],
+  "type": "service_account",
+  "project_id": "clhs-nowotify",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  
   "private_key_id": os.environ["private_key_id"],
   "private_key": os.environ["private_key"],
   "client_email": os.environ["client_email"],
   "client_id": os.environ["client_id"],
-  "auth_uri": os.environ["auth_uri"],
-  "token_uri": os.environ["token_uri"],
   "auth_provider_x509_cert_url": os.environ["auth_provider_x509_cert_url"],
   "client_x509_cert_url": os.environ["client_x509_cert_url"],
 }

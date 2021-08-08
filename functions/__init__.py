@@ -7,9 +7,7 @@ from .notify import notify_users
 
 import logging
 logging.basicConfig(
-  filename='logs/main.log',
-  format='%(asctime)s - [%(levelname)s]%(message)s',
-  encoding='utf-8',
+  format='%(asctime)s - [%(levelname)s] %(message)s',
   level=logging.INFO
 )
 
