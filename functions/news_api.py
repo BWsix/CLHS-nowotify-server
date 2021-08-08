@@ -86,7 +86,7 @@ def get_news_on_latest_date(group: str) -> tuple[str, list[News]]:
   """
 
   news_list = get_news(group)
-  latest_date = max(news_list, key=lambda n: n.date)
+  latest_date = max(news.date for news in news_list)
   
   return latest_date, (news for news in news_list if news.date == latest_date)
 
