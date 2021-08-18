@@ -25,10 +25,8 @@ def create_notify_contents(news: News) -> tuple[str, str]:
   }
 
   content_line = f"{news.office} {news.news_type}"
-  if(news.is_pinned): content_line += " *(重要通知 !)*"
-  content_line += f"""\n發布日期 : {news.date}
-公告內容 :
-{news.content}
+  if(news.is_pinned): content_line += " (重要通知)"
+  content_line += f"""\n{news.content}
 
 前往學校官網查看詳細內容 :
 {NEWS_LINK.format(str(news.id))}
