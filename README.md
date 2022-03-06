@@ -3,7 +3,9 @@
 使用 Discord / Line 及時接收壢中官網公告
 
 **前往[設定頁面][clhs_nowotify]**  
-**前往[CLHS nowotify - client][repo_client]**
+**前往[CLHS nowotify - client][repo_client]**  
+**前往[CLHS nowotify - server][repo_server]**  
+**前往[CLHS nowotify - twitter bot][repo_twitter_bot]**
 
 ## 目錄
 
@@ -21,10 +23,7 @@ CLHS nowotify 使用 python 伺服器監聽壢中官網
 
 ### 架構圖
 
-> ![](https://i.imgur.com/dPgNcP8.png)  
-> **client** : react app deployed on Github pages  
-> **server** : python server hosted on Heroku
-
+> ![](https://i.imgur.com/2WyaLoD.png)
 ## 特色<a id="features"></a>
 
 ### 快速、簡單的安裝
@@ -32,7 +31,6 @@ CLHS nowotify 使用 python 伺服器監聽壢中官網
 可以在[設定頁面][clhs_nowotify]依照教學登錄資訊(discord / line)後啟用
 
 > 因為 line notify 只能從電腦版網站做設定，如果要使用 line 接收通知請記得使用電腦安裝
-
 ### 客製化設定
 
 目前可以設定的項目有 :
@@ -124,4 +122,6 @@ CLHS nowotify 使用 python 伺服器監聽壢中官網
 
 [clhs_nowotify]: https://bwsix.github.io/CLHS-nowotify/
 [repo_client]: https://github.com/BWsix/CLHS-nowotify
+[repo_server]: https://github.com/BWsix/CLHS-nowotify-server
+[repo_twitter_bot]: https://github.com/BWsix/CLHS-nowotify-twitter-bot
 [@storiesbang]: https://github.com/storiesbang
