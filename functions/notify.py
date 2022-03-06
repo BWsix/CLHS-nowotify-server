@@ -95,6 +95,9 @@ def notify_users(news: News, all_nowotify: list[Nowotify]) -> None:
     if nowotify.type == "line":
       notify_line_user(nowotify.data, content_line)
   
+  if not news.is_pinned:
+    return
+
   logging.info(f"[notify]updating twitter bot")
   update_twitter_bot(news)
 
