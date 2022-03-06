@@ -1,4 +1,5 @@
 import logging
+import os
 import requests
 from line_notify import LineNotify
 
@@ -59,6 +60,19 @@ def notify_line_user(token: str, content: str) -> None:
     # please help me out if you have any idea how to properly handle any potentail errors, thanks!
 
 
+def update_twitter_bot(news: News) -> None:
+  url = "https://clhs-nowotify-twitter-bot.vercel.app/api/tweet"
+
+  requests.post(
+    url,
+    data={
+      "content": news.content,
+      "link": NEWS_LINK.format(str(news.id)),
+      "token": os.environ["token"]
+    }
+  )
+
+
 def notify_users(news: News, all_nowotify: list[Nowotify]) -> None:
   """notify all users.\n
   if `only_pinned` is true, the user will not gets notified by unpinned news"""
@@ -80,6 +94,9 @@ def notify_users(news: News, all_nowotify: list[Nowotify]) -> None:
       notify_discord_user(nowotify.data, content_discord)
     if nowotify.type == "line":
       notify_line_user(nowotify.data, content_line)
+  
+  logging.info(f"[notify]updating twitter bot")
+  update_twitter_bot(news)
 
 
 def send_system_message(title: str, message: str) -> None:
